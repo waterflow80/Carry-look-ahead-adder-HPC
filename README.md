@@ -28,7 +28,7 @@ The combinational ciruit will be using the **Generate** and the **Propagate** lo
 ## Implementation
 In out first implementation of the carry look ahead, we'll have two major steps:
 ### 1. Calculate the Propagate and the Generate
-We're going to use two matrices to hold the values of **Propagate** and **Generate**, in order to avoid calculating the P and G for the same block twice (although I'm not sure if we might fall in that case). Here's an example of that logic for two **4-bit** numbers `a=1010` and `b=1100`:
+We're going to use two matrices to hold the values of **Propagate** and **Generate**, in order to avoid calculating the P and G for the same block twice. Here's an example of that logic for two **4-bit** numbers `a=1010` and `b=1100`:
 
 ![genrate-progapage-hpc-2 drawio](https://github.com/waterflow80/Carry-look-ahead-adder-HPC/assets/82417779/20f2c938-5143-4bb4-b703-94a1972e3df0)
 
