@@ -1,4 +1,4 @@
-# Carry Look Ahead-adder-HPC
+# Carry Look Ahead Adder - HPC
 This is a parallelized full adder implented in **C++** using **OpenMP** libraries.
 
 This project aims at implementing a fast way for calculating the sum of two numbers (binary numbers), and parallelize that implementation using **OpenMP** directives in C++.
