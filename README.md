@@ -53,6 +53,7 @@ Here, i=k=4 (in our code). You can learn more about the carry look ahead carries
 - `bool getSecondPatternVal(int k, int c0)`: this will return the value of the following section of the Ci formula:
   ![second-pattern](https://github.com/waterflow80/Carry-look-ahead-adder-HPC/assets/82417779/17a43bc2-b656-4b89-a00a-8702d6e58e43)
 
+**Note**: if you want to change the arguments, you can do it by referring to: `a`, `b`, `N` **Important** (you should update the N). 
 ## Parallelization
 Now that we have a much less decoupling dependecy graph, we can profit from **Parallelization** using **OpenMP** directives.
 
