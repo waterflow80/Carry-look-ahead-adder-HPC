@@ -40,7 +40,7 @@ Here's the content of those two matrices after executing the program for that sa
 
 **Complexity:** todo.
 
-### 1. Calculate the sum
+### 2. Calculate the sum
 Now that we have the `Propagate` and the `Genreate` of each block, we can make the sum of each block independently, without waiting for carry out of the previous block. Using the Carry formulas described [here](https://www.cs.umd.edu/~meesh/cmsc311/clin-cmsc311/Lectures/lecture22/lookahead.pdf).
 
 ## The Code
