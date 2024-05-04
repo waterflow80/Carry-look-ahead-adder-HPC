@@ -41,8 +41,22 @@ Here's the content of those two matrices after executing the program for that sa
 **Complexity:** todo.
 
 ### 1. Calculate the sum
-// TODO
-  
+Now that we have the `Propagate` and the `Genreate` of each block, we can make the sum of each block independently, without waiting for carry out of the previous block. Using the Carry formulas described [here](https://www.cs.umd.edu/~meesh/cmsc311/clin-cmsc311/Lectures/lecture22/lookahead.pdf).
+
+## The Code
+In this section we'll put some explanations about some terms used in the code:
+- `bool getFirstPatternVal(int k, int N){}`: this will return the value of the following section of the Ci formula:
+   ![first-pattern](https://github.com/waterflow80/Carry-look-ahead-adder-HPC/assets/82417779/b4269967-5cbe-468e-8568-55875db603e2)
+
+Here, i=k=4 (in our code). You can learn more about the carry look ahead carries' formulas [here](https://www.cs.umd.edu/~meesh/cmsc311/clin-cmsc311/Lectures/lecture22/lookahead.pdf).
+
+- `bool getSecondPatternVal(int k, int c0)`: this will return the value of the following section of the Ci formula:
+  ![second-pattern](https://github.com/waterflow80/Carry-look-ahead-adder-HPC/assets/82417779/17a43bc2-b656-4b89-a00a-8702d6e58e43)
+
+## Parallelization
+Now that we have a much less decoupling dependecy graph, we can profit from **Parallelization** using **OpenMP** directives.
+
+## Evaluation & Comparison
 ## Important Formulas and Notations
 Here are some important formulas used in this implementation:
 
