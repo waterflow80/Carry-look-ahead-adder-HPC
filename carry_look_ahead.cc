@@ -1,7 +1,7 @@
 /**
  * ----- Carry Look Ahead Adder -----
  * Important formulas:
- * - [ Gb = Gl + (Pl . Gr) ] => The 'Generate' of a block equals the 'Generate' of the left side OR ('Propagate' of the left side AND 'Generate' of the right side)
+ * - [ Gb = Gl + (Pl . Gr) ] => The 'Generate' of a block equals the 'Generate' of the left side OR the ('Propagate' of the left side AND 'Generate' of the right side)
  * - [ Pb = Pl . Pr] => The 'Propagate' of a block equals the 'Propagate' of the left side AND the 'Propagate' of the right side
  * - P = x + y (x OR y). Can also work with x XOR y (Propagate of a block of 1-bit)
  * - G = x . y (x AND y) (Genreate of a block of 1-bit)*/ 
@@ -15,7 +15,7 @@ const int N=4; // The number of bits of each number to add (this will be input b
 
 // Input Data
 string a = "1010";
-string b = "1100";
+string b = "1101";
 int c0 = 1; // initial carry in
 
 // Utils
@@ -87,6 +87,101 @@ void init_P_and_G(string& a, string& b, int stage, int l, int r) {
 	}
 }
 
+/**
+ * Return the value for the first pattern in the i_th carryIn formula
+ * See: https://www.cs.umd.edu/~meesh/cmsc311/clin-cmsc311/Lectures/lecture22/lookahead.pdf to learn more on
+ * how to calculate Ck
+ * N: the number of bits that compose a and b
+ * NOTE: This is currently working only for stage=0 (blocks of 1-bit). You can notice the G[0][...]*/
+bool getFirstPatternVal(int k, int N) {
+	bool temp = 1;
+	int n = k-1;
+	int i = n;
+	int start = 1;
+	while (i >= 1) {
+		for (int j=start; j<=n; j++) {
+			temp = temp && P[0][N-j-1]; // N-j-1 to get the reverse order. Eg P0 (Propagate0) will be P[N-1] in our P array representation 
+			cout << "temp .= P[0][" <<N-j-1<< "]" << endl;
+		}
+		// add g[k-i-1]
+		temp = temp && G[0][N-(n-i)-1];
+		cout << "temp .= G[0][" << N-(n-i)-1 << "]" << endl;
+		i--;
+		start++;
+	}
+	return temp;
+}
+
+/*
+ * *Return the value for the first pattern in the i_th carryIn formula
+*/
+bool getSecondPatternVal(int k, int c0) {
+	cout << "second pattern:\n";
+	bool temp = 1;
+	for (int i=0; i<k; i++) {
+		temp = temp && P[0][N-i-1];
+		cout << "temp .= P[0][" <<N-i-1<< "]=" << P[0][N-i-1] << endl;
+		cout << "temp=" << temp << endl;
+	}
+	temp = temp && c0;
+	cout << "temp .= cin="<< c0 << endl;
+	cout << "temp in second pattern = " << temp << endl;
+	return temp;
+}
+
+/**
+ * Add two bits and don't consider the carry*/
+bool binaryAddition(bool a, bool b) {
+	cout << "a=" << a << ", b=" << b << endl;
+	if (a == 1 && b == 1) 
+		return 0;
+	return (a || b);
+}
+
+/**
+ * Perform a full adder using the Propagate and Genereate arrays to calculate the carry in for each block.
+ * The Generate and Propagate arrays should be initialized before calling this function.
+ * s: will contain the result of the final addition
+ * N: the number of bits of which composed a and b
+ * For more information about how to calculate the carry, plese see: https://www.cs.umd.edu/~meesh/cmsc311/clin-cmsc311/Lectures/lecture22/lookahead.pdf
+ * TODO this function should return the carry out of the added block (we'll only need the last one)*/
+void full_adder(string &a, string &b, bool c0, bool* s, int l, int r, int stage, int N) {
+	cout << "\nINFO: Stage=" << stage << ", l=" << l << ", r=" << r << endl;
+	if (stage == 0) {
+		// r = -1
+		if (l == N-1) {
+			// we're at the last significant bit
+			//s[l] = a[l] - '0' || b[l] - '0' || c0;
+			s[l] = binaryAddition(binaryAddition(a[l] - '0', b[l] - '0'), c0);
+			cout << "s[" << l << "]=" << s[l] << endl;
+			//TODO return the carry out	
+		} else {
+			// other bits than the less significant
+			int i = N-l-1; // This is the index of the i_th carry we're looking for to perform the addition
+			bool ci = 0;  // This is the i_th carry we're looking for to perform the addition
+			cout << "Looking for: C"<<i <<endl;
+			ci = ci || G[0][l+1]; // l+1 because i-1 means less significant, so we have to advance in bits to the right (is is reversed)
+			if (i == 1) {
+				// we can calculate C1 using C0
+				ci += P[0][N-1] && c0;
+				cout << "temp += P[0][" << N-1 << "]\n";
+			} else {
+				ci = ci || getFirstPatternVal(i, N);
+				ci = ci || getSecondPatternVal(i, c0);
+				//s[l] = a[l] - '0' || b[l] - '0' || ci;
+			}
+			s[l] = binaryAddition(binaryAddition(a[l] - '0', b[l] - '0'), ci);
+			cout << "s[" << l << "]=" << s[l] << endl;
+			cout << "C" << i << "=" << ci << endl;
+			//TODO return the carry out
+		}
+	} else {
+		// stage > 0
+		full_adder(a, b, c0, s, l, (l+r)/2, stage-1, N);
+		full_adder(a, b, c0, s, (l+r)/2+1, r, stage-1, N);
+		// TODO return the carry out
+	}	
+}
 
 
 int main() {
@@ -100,7 +195,15 @@ int main() {
 	display_2D_array(P, log2(N)+1 ,N);
 	cout << "Generate:\n";
 	display_2D_array(G, log2(N)+1 ,N);
-	
 
+	cout << "------ADDITION------\n";
+
+	bool* s = (bool*) malloc(N * sizeof(bool));
+	full_adder(a, b, c0, s, 0, N-1, log2(N), N);
+	
+	for (int i=0; i<N; i++) {
+		cout << s[i] << " | ";
+	}
+	cout << endl;
 
 }
