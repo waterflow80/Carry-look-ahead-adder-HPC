@@ -32,7 +32,7 @@ We're going to use two matrices to hold the values of **Propagate** and **Genera
 
 ![genrate-progapage-hpc-2 drawio](https://github.com/waterflow80/Carry-look-ahead-adder-HPC/assets/82417779/20f2c938-5143-4bb4-b703-94a1972e3df0)
 
-Both `P` and `G` matrices will be of size `[log(N)][N]`, where **N** is the number of bits in each number (assuming both numbers are of equal number of bits). 
+Both `P` and `G` matrices will be of size `[log(N)+1][N]`, where **N** is the number of bits in each number (assuming both numbers are of equal number of bits). 
 
 Here's the content of those two matrices after executing the program for that same example:
 
