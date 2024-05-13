@@ -7,6 +7,7 @@
  * - G = x . y (x AND y) (Genreate of a block of 1-bit)*/ 
 
 #include<bits/stdc++.h>
+#include<omp.h>
 
 using namespace std;
 
@@ -42,11 +43,10 @@ void display_array(bool* a, int n) {
 // Working only on stage 0, because we don't other need stages in this implenentation
 void init_P_and_G_iter(string& a, string& b, int n) {
 	for (int i=n-1; i>=0; i--) {
-		P[i] = a[i] - '0' || b[i] - '0';
-		G[i] = a[i] - '0' && b[i] - '0';
-	}
+                P[i] = a[i] - '0' || b[i] - '0';
+                G[i] = a[i] - '0' && b[i] - '0';
+        }
 }
-
 
 /**
  * Return the value for the first pattern in the i_th carryIn formula
@@ -104,7 +104,9 @@ bool binaryAddition(bool a, bool b) {
 void full_adder_iter(string &a, string &b, bool c0, bool* s, int N){	
 	// r = -1
 	s[N-1] = binaryAddition(binaryAddition(a[N-1] - '0', b[N-1] - '0'), c0); // adding the least significant bit
-	for (int i=N-2; i>=0; i--) {	
+	#pragma omp parallel for
+	for (int i=N-2; i>=0; i--) {
+		printf("Thread %d\n", omp_get_thread_num());	
 		// other bits than the less significant
 		int j = N-i-1; // This is the index of the j_th carry we're looking for to perform the addition
 		bool ci = 0;  // This is the i_th carry we're looking for to perform the addition

@@ -11,12 +11,12 @@
 using namespace std;
 
 
-const int N=4; // The number of bits of each number to add (this will be input by the user)
+const int N=128; // The number of bits of each number to add (this will be input by the user)
 
 // Input Data
-string a = "1010";
-string b = "1101";
-int c0 = 1; // initial carry in
+string a = "1100100110100110001111000111111001011000101011110110100010011100110001101010010110100100110101001111000111011111011101000111111111110";
+string b = "1010111111011010100110011011001010101110100100111000101111011010110010101011110100100111111101001110111011110111100011001011001101";
+int c0 = 0; // initial carry in
 
 // Utils
 bool** P; // Propagate
