@@ -26,8 +26,9 @@ The floowing diagram illustrates the idea:
 The combinational ciruit will be using the **Generate** and the **Propagate** logic to calculate the the carry out of any given block.
 
 ## Implementation
-In out first implementation of the carry look ahead, we'll have two major steps:
-### 1. Calculate the Propagate and the Generate
+We've made two different approaches to implement the carry look ahead algorithm. One is **recursive**, in which we divide the problem into different stages, and each stage contains a different set of binary blocks (portions of the initial ‘a’ and ‘b to be added). After implementing the recursive approach, we found out that we don’t need other stages than 0 to make the addition, so the other approach is the **iterative** approach, in which we used a simple for loop to initialize the Propagate and Generate values, on one hand, and also to make the sum, on the other hand.
+### 1. Recursive approach
+#### 1.1. Calculate the Propagate and the Generate
 We're going to use two matrices to hold the values of **Propagate** and **Generate**, in order to avoid calculating the P and G for the same block twice. Here's an example of that logic for two **4-bit** numbers `a=1010` and `b=1100`:
 
 ![genrate-progapage-hpc-2 drawio](https://github.com/waterflow80/Carry-look-ahead-adder-HPC/assets/82417779/20f2c938-5143-4bb4-b703-94a1972e3df0)
@@ -40,8 +41,24 @@ Here's the content of those two matrices after executing the program for that sa
 
 **Complexity:** todo.
 
-### 2. Calculate the sum
+### 1.2. Calculate the sum
 Now that we have the `Propagate` and the `Genreate` of each block, we can make the sum of each block independently, without waiting for carry out of the previous block. Using the Carry formulas described [here](https://www.cs.umd.edu/~meesh/cmsc311/clin-cmsc311/Lectures/lecture22/lookahead.pdf).
+
+### 2. Iterative approach
+#### 2.1. Calculate the Propagate and the Generate
+For the iterative approach, it's basically the same idea as the recursive one but for only stage 0. So We're going to use two arrays to hold the values of **Propagate** and **Generate**. Here's an example of that logic for two **4-bit** numbers `a=1010` and `b=1100`:
+
+![Copy of hpc-carry-look-ahead-adder2-iter drawio](https://github.com/waterflow80/Carry-look-ahead-adder-HPC/assets/82417779/b6777fa9-2272-4ed0-a778-ea14addc86a0)
+
+
+Both `P` and `G` arrays will be of size `[N]`, where **N** is the number of bits in each number (assuming both numbers are of equal number of bits).
+
+Here's the content of those two arrays after executing the program for that same example:
+
+![Screenshot from 2024-05-14 17-43-58](https://github.com/waterflow80/Carry-look-ahead-adder-HPC/assets/82417779/c57142b7-2834-4f82-ac8f-a58b104cee5b)
+
+### 2.2. Calculate the sum
+So the logic for the iterative approach, is basically the same as the recursive one, except that we'll only use stage 0 blocks. We'll be using a simple for loop.
 
 ## The Code
 In this section we'll put some explanations about some terms used in the code:
