@@ -34,7 +34,7 @@ do
 done
 
 average_time=$(echo "scale=3; $total_time / $iterations" | bc)
-echo "Average time for sequential execution is: $average_time"
+echo "Average time for sequential recursive execution is: $average_time"
 
 ## Evalutating parallel recursive
 for i in $(seq 1 $iterations)
@@ -78,4 +78,4 @@ done
 average_time=$(echo "scale=3; $total_time / $iterations" | bc)
 echo "Average time for parallel iterative execution is: $average_time"
 
-rm -f sequential parallelRec
+rm -f sequential parallelRec sequentialIter iterPara
