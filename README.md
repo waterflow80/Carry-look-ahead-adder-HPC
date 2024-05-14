@@ -75,6 +75,50 @@ Here, i=k=4 (in our code). You can learn more about the carry look ahead carries
 **Note**: `N` should be a **power of 2**.
 ## Parallelization
 Now that we have a much less decoupling dependecy graph, we can profit from **Parallelization** using **OpenMP** directives.
+### Parallelizing the recursive approach
+We used `OMP Tasks` to parallelize both the Propagate and Generate initialization and the addition process. Here's a portion of how we implemented it in th code:
+```cpp
+// main() 
+#pragma omp parallel
+{
+   #pragma omp single
+   {
+      init_P_and_G(a, b, log2(N), 0, N-1);
+   }
+}
+...
+
+#pragma omp parallel
+{
+   #pragma omp single
+   {
+      full_adder(a, b, c0, s, 0, N-1, log2(N), N);
+   }
+}
+```
+```cpp
+// init_P_and_G()
+#pragma omp task shared(P) shared(G)
+{
+   init_P_and_G(a, b, stage - 1, l, (l+r)/2); // left
+}
+#pragma omp task shared(P) shared(G)
+{
+   init_P_and_G(a, b, stage - 1, (l+r)/2+1, r); // right
+}
+```
+```cpp
+// full_adder()
+#pragma omp task shared(s) 
+{
+   full_adder(a, b, c0, s, l, (l+r)/2, stage-1, N);
+}
+#pragma omp task shared(a)
+{
+   full_adder(a, b, c0, s, (l+r)/2+1, r, stage-1, N);
+}
+```
+### Parallelizing the iterative approach
 
 ## Evaluation & Comparison
 ## Important Formulas and Notations
