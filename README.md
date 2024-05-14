@@ -119,8 +119,36 @@ We used `OMP Tasks` to parallelize both the Propagate and Generate initializatio
 }
 ```
 ### Parallelizing the iterative approach
-
+For the iterative approach, we can use two ways of paralellization: using `prallel for` or using `tasks`.
+#### Using Parallel for
+```cpp
+// init_P_and_G()
+#pragma omp parallel for
+for (int i=n-1; i>=0; i--) {
+   //printf("Thread %d\n", omp_get_thread_num());  
+   P[i] = a[i] - '0' || b[i] - '0';
+   G[i] = a[i] - '0' && b[i] - '0';
+}
+```
+```cpp
+// full_adder()
+...
+#pragma omp parallel for
+for (int i=N-2; i>=0; i--) {
+   // other bits than the less significant
+   int j = N-i-1;
+...
+}
+```
+#### Using Tasks
+//TODO
 ## Evaluation & Comparison
+The `benchmark.sh` is a bash script that executes the differnt approaches, both the sequential and the parallel one, and displays the execution time for each.
+However, we still have to update it to make it free the cache after each execution to avoid and misleading values.
+Here's a sample output of the `benchmark.sh` script:
+
+![Screenshot from 2024-05-15 00-52-20](https://github.com/waterflow80/Carry-look-ahead-adder-HPC/assets/82417779/5f2a1cc4-fadf-4b1b-a51a-92f70ff5e6df)
+
 ## Important Formulas and Notations
 Here are some important formulas used in this implementation:
 
