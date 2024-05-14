@@ -62,11 +62,9 @@ bool getFirstPatternVal(int k, int N) {
 	while (i >= 1) {
 		for (int j=start; j<=n; j++) {
 			temp = temp && P[N-j-1]; // N-j-1 to get the reverse order. Eg P0 (Propagate0) will be P[N-1] in our P array representation 
-			//cout << "temp .= P[0][" <<N-j-1<< "]" << endl;
 		}
 		// add g[k-i-1]
 		temp = temp && G[N-(n-i)-1];
-		//cout << "temp .= G[0][" << N-(n-i)-1 << "]" << endl;
 		i--;
 		start++;
 	}
@@ -77,23 +75,17 @@ bool getFirstPatternVal(int k, int N) {
  * *Return the value for the first pattern in the i_th carryIn formula
 */
 bool getSecondPatternVal(int k, int c0) {
-	//cout << "second pattern:\n";
 	bool temp = 1;
 	for (int i=0; i<k; i++) {
 		temp = temp && P[N-i-1];
-		//cout << "temp .= P[0][" <<N-i-1<< "]=" << P[0][N-i-1] << endl;
-		//cout << "temp=" << temp << endl;
 	}
 	temp = temp && c0;
-	//cout << "temp .= cin="<< c0 << endl;
-	//cout << "temp in second pattern = " << temp << endl;
 	return temp;
 }
 
 /**
  * Add two bits and don't consider the carry*/
 bool binaryAddition(bool a, bool b) {
-	//cout << "a=" << a << ", b=" << b << endl;
 	if (a == 1 && b == 1) 
 		return 0;
 	return (a || b);
@@ -108,20 +100,15 @@ void full_adder_iter(string &a, string &b, bool c0, bool* s, int N){
 		// other bits than the less significant
 		int j = N-i-1; // This is the index of the j_th carry we're looking for to perform the addition
 		bool ci = 0;  // This is the i_th carry we're looking for to perform the addition
-		//cout << "Looking for: C"<<i <<endl;
 		ci = ci || G[i+1]; // i+1 because i-1(from left to right) means less significant, so we have to advance in bits to the right (is is reversed)
 		if (j == 1) {
 			// we can calculate C1 using C0
 			ci += P[N-1] && c0;
-			//cout << "temp += P[0][" << N-1 << "]\n";
 		} else {
 			ci = ci || getFirstPatternVal(j, N);
 			ci = ci || getSecondPatternVal(j, c0);
-			//s[l] = a[l] - '0' || b[l] - '0' || ci;
 		}
 		s[i] = binaryAddition(binaryAddition(a[i] - '0', b[i] - '0'), ci);
-		//cout << "s[" << l << "]=" << s[l] << endl;
-		//cout << "C" << i << "=" << ci << endl;
 	}	
 }
 
@@ -129,8 +116,6 @@ void full_adder_iter(string &a, string &b, bool c0, bool* s, int N){
 int main() {
 	P = init_array(N);
 	G = init_array(N);
-	//display_array(P, N);
-	//display_array(G, N);
 	
 	init_P_and_G_iter(a, b, N);
 	cout << "Propagate:\n";

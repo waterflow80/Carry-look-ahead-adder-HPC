@@ -27,10 +27,8 @@ bool** init_2D_array(int nRows, int nCols) {
 	bool **a = (bool**) malloc(nRows * sizeof(bool*));
 	for (int i=0; i<nRows; i++) {
 		a[i] = (bool*) malloc(nCols * sizeof(bool));
-		for (int j=0; j<nCols; j++) {
-			//cout << "Init a[" << i << "][" << j << "]=" << a[i][j] << endl;  
+		for (int j=0; j<nCols; j++)
 			a[i][j] = NULL;
-		}
 	}
 	return a;
 }
@@ -60,22 +58,12 @@ void init_P_and_G(string& a, string& b, int stage, int l, int r) {
 	if (stage == 0) {
 		// In this case r=-1, We only have 1-bit block
 		P[stage][l] = a[l] - '0' || b[l] - '0';
-		//cout << a[l] - '0' << endl;
-		//cout << b[l] - '0' << endl;
 		G[stage][l] = a[l] - '0' && b[l] - '0';
-		//cout << "Propagate[0][" << l << "]=" << P[stage][l] << endl;
-		//cout << "Generate[0][" << l << "]=" << G[stage][l] << endl;
-		//cout << "Propagate:\n";
-		//display_2D_array(P, log2(N)+1 ,N);
-		//cout << "Generate:\n";
-		//display_2D_array(G, log2(N)+1 ,N);
-		//cout << "===========================\n";
 		
 	} else if (stage == 1) {
 		// The next recursive call will process 1-bit blocks
 		init_P_and_G(a, b, stage - 1, l, -1); // left side of the block
 		init_P_and_G(a, b, stage - 1, r, -1); // right side of the block
-		//cout << "stage = 1, completed right and left side \n";
 		P[stage][l] = P[stage-1][l] && P[stage-1][r];
 		G[stage][l] = G[stage-1][l] || (P[stage-1][l] && P[stage-1][r]);
 	} else {
@@ -101,11 +89,9 @@ bool getFirstPatternVal(int k, int N) {
 	while (i >= 1) {
 		for (int j=start; j<=n; j++) {
 			temp = temp && P[0][N-j-1]; // N-j-1 to get the reverse order. Eg P0 (Propagate0) will be P[N-1] in our P array representation 
-			//cout << "temp .= P[0][" <<N-j-1<< "]" << endl;
 		}
 		// add g[k-i-1]
 		temp = temp && G[0][N-(n-i)-1];
-		//cout << "temp .= G[0][" << N-(n-i)-1 << "]" << endl;
 		i--;
 		start++;
 	}
@@ -116,23 +102,17 @@ bool getFirstPatternVal(int k, int N) {
  * *Return the value for the first pattern in the i_th carryIn formula
 */
 bool getSecondPatternVal(int k, int c0) {
-	//cout << "second pattern:\n";
 	bool temp = 1;
 	for (int i=0; i<k; i++) {
 		temp = temp && P[0][N-i-1];
-		//cout << "temp .= P[0][" <<N-i-1<< "]=" << P[0][N-i-1] << endl;
-		//cout << "temp=" << temp << endl;
 	}
 	temp = temp && c0;
-	//cout << "temp .= cin="<< c0 << endl;
-	//cout << "temp in second pattern = " << temp << endl;
 	return temp;
 }
 
 /**
  * Add two bits and don't consider the carry*/
 bool binaryAddition(bool a, bool b) {
-	//cout << "a=" << a << ", b=" << b << endl;
 	if (a == 1 && b == 1) 
 		return 0;
 	return (a || b);
@@ -146,33 +126,25 @@ bool binaryAddition(bool a, bool b) {
  * For more information about how to calculate the carry, plese see: https://www.cs.umd.edu/~meesh/cmsc311/clin-cmsc311/Lectures/lecture22/lookahead.pdf
  * TODO this function should return the carry out of the added block (we'll only need the last one)*/
 void full_adder(string &a, string &b, bool c0, bool* s, int l, int r, int stage, int N) {
-	//cout << "\nINFO: Stage=" << stage << ", l=" << l << ", r=" << r << endl;
 	if (stage == 0) {
 		// r = -1
 		if (l == N-1) {
 			// we're at the last significant bit
-			//s[l] = a[l] - '0' || b[l] - '0' || c0;
 			s[l] = binaryAddition(binaryAddition(a[l] - '0', b[l] - '0'), c0);
-			//cout << "s[" << l << "]=" << s[l] << endl;
 			//TODO return the carry out	
 		} else {
 			// other bits than the less significant
 			int i = N-l-1; // This is the index of the i_th carry we're looking for to perform the addition
 			bool ci = 0;  // This is the i_th carry we're looking for to perform the addition
-			//cout << "Looking for: C"<<i <<endl;
 			ci = ci || G[0][l+1]; // l+1 because i-1 means less significant, so we have to advance in bits to the right (is is reversed)
 			if (i == 1) {
 				// we can calculate C1 using C0
 				ci += P[0][N-1] && c0;
-				//cout << "temp += P[0][" << N-1 << "]\n";
 			} else {
 				ci = ci || getFirstPatternVal(i, N);
 				ci = ci || getSecondPatternVal(i, c0);
-				//s[l] = a[l] - '0' || b[l] - '0' || ci;
 			}
 			s[l] = binaryAddition(binaryAddition(a[l] - '0', b[l] - '0'), ci);
-			//cout << "s[" << l << "]=" << s[l] << endl;
-			//cout << "C" << i << "=" << ci << endl;
 			//TODO return the carry out
 		}
 	} else {
@@ -187,8 +159,6 @@ void full_adder(string &a, string &b, bool c0, bool* s, int l, int r, int stage,
 int main() {
 	P = init_2D_array(log2(N)+1 ,N);
 	G = init_2D_array(log2(N)+1, N);
-	//display_2D_array(P, log2(N)+1 ,N);
-	//display_2D_array(G, log2(N)+1 ,N);
 	
 	init_P_and_G(a, b, log2(N), 0, N-1);
 	cout << "Propagate:\n";
