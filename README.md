@@ -159,3 +159,6 @@ Here are some important formulas used in this implementation:
 **P = x + y** (x OR y): Propagate of a block of 1-bit (Can also work with x XOR y)
 
 **G = x . y** (x AND y): Genreate of a block of 1-bit
+
+## Finally
+If you find it useful, please consider giving it a star :)
