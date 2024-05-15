@@ -163,7 +163,7 @@ void full_adder(string &a, string &b, bool c0, bool* s, int l, int r, int stage,
 		{
 			full_adder(a, b, c0, s, l, (l+r)/2, stage-1, N);
 		}
-		#pragma omp task shared(a)
+		#pragma omp task shared(s)
 		{
 			full_adder(a, b, c0, s, (l+r)/2+1, r, stage-1, N);
 		}
